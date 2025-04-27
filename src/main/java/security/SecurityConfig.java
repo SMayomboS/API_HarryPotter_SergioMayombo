@@ -1,4 +1,4 @@
-package security; // ⚡ Asegúrate que el package coincide con tu estructura (o usa com.harrypotter.api.security si quieres mejor organización)
+package security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,17 +24,26 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 🔥 IMPORTANTE: No sesiones, solo tokens
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/h2-console/**").permitAll() // Liberar login, registro y consola H2
-                        .anyRequest().authenticated() // Proteger todo lo demás
+                        .requestMatchers(
+                                "/auth/**",
+                                "/h2-console/**",
+                                "/index.html",
+                                "/static/**",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**"
+                        ).permitAll() // 🔥 Deja libres estos archivos
+                        .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin())) // Permitir H2 Console
-                .formLogin(form -> form.disable()) // 🔥 Desactivar formulario de login de Spring
-                .httpBasic(httpBasic -> httpBasic.disable()) // 🔥 Desactivar autenticación básica
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // Añadir filtro JWT antes del de usuario y contraseña
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+                .formLogin(form -> form.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
