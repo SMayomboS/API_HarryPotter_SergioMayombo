@@ -2,28 +2,59 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Harry Potter API - Pruebas</title>
+    <title>Harry Potter API - Frontend de Pruebas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, button { margin: 5px; }
+        .section { margin-bottom: 30px; }
+    </style>
 </head>
 <body>
 
-<h1>Harry Potter API - Frontend de Pruebas</h1>
+<h1>🧙‍♂️ Harry Potter API - Frontend de Pruebas</h1>
 
-<h2>Registro</h2>
-<input type="text" id="register-username" placeholder="Usuario">
-<input type="password" id="register-password" placeholder="Contraseña">
-<button onclick="register()">Registrarse</button>
+<div class="section">
+    <h2>Registrar usuario</h2>
+    <input type="text" id="register-username" placeholder="Username">
+    <input type="password" id="register-password" placeholder="Password">
+    <button onclick="register()">Registrar</button>
+</div>
 
-<h2>Login</h2>
-<input type="text" id="login-username" placeholder="Usuario">
-<input type="password" id="login-password" placeholder="Contraseña">
-<button onclick="login()">Iniciar sesión</button>
+<div class="section">
+    <h2>Login</h2>
+    <input type="text" id="login-username" placeholder="Username">
+    <input type="password" id="login-password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="token-info"></p>
+</div>
 
-<h2>Crear película</h2>
-<input type="text" id="movie-title" placeholder="Título">
-<input type="number" id="movie-length" placeholder="Duración (min)">
-<input type="text" id="movie-sinopsis" placeholder="Sinopsis">
-<input type="number" id="movie-year" placeholder="Año">
-<button onclick="createMovie()">Crear Película</button>
+<div class="section">
+    <h2>Crear Película</h2>
+    <input type="text" id="movie-title" placeholder="Título">
+    <input type="number" id="movie-length" placeholder="Duración (min)">
+    <input type="text" id="movie-sinopsis" placeholder="Sinopsis">
+    <input type="number" id="movie-year" placeholder="Año">
+    <button onclick="createMovie()">Crear Película</button>
+</div>
+
+<div class="section">
+    <h2>Crear Personaje</h2>
+    <input type="text" id="character-name" placeholder="Nombre">
+    <input type="text" id="character-desc" placeholder="Descripción">
+    <input type="number" id="character-magic" placeholder="Magia">
+    <input type="number" id="character-strength" placeholder="Fuerza">
+    <input type="number" id="character-resistance" placeholder="Resistencia">
+    <button onclick="createCharacter()">Crear Personaje</button>
+</div>
+
+<div class="section">
+    <h2>Combatir</h2>
+    <input type="number" id="combat-p1" placeholder="ID Personaje 1">
+    <input type="number" id="combat-p2" placeholder="ID Personaje 2">
+    <button onclick="fight()">Lanzar combate</button>
+</div>
+
+<div id="resultados" class="section"></div>
 
 <script>
     let token = "";
@@ -39,7 +70,7 @@
         });
 
         const data = await response.json();
-        alert("Usuario registrado: " + JSON.stringify(data));
+        document.getElementById("resultados").innerText = "Usuario registrado: " + JSON.stringify(data);
     }
 
     async function login() {
@@ -53,7 +84,7 @@
         });
 
         token = await response.text();
-        alert("Login exitoso. Token guardado.");
+        document.getElementById("token-info").innerText = "Token: " + token;
     }
 
     async function createMovie() {
@@ -72,7 +103,42 @@
         });
 
         const data = await response.json();
-        alert("Película creada: " + JSON.stringify(data));
+        document.getElementById("resultados").innerText = "Película creada: " + JSON.stringify(data);
+    }
+
+    async function createCharacter() {
+        const name = document.getElementById("character-name").value;
+        const desc = document.getElementById("character-desc").value;
+        const magia = document.getElementById("character-magic").value;
+        const fuerza = document.getElementById("character-strength").value;
+        const resistencia = document.getElementById("character-resistance").value;
+
+        const response = await fetch('/personajes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ name, desc, magia, fuerza, resistencia })
+        });
+
+        const data = await response.json();
+        document.getElementById("resultados").innerText = "Personaje creado: " + JSON.stringify(data);
+    }
+
+    async function fight() {
+        const p1 = document.getElementById("combat-p1").value;
+        const p2 = document.getElementById("combat-p2").value;
+
+        const response = await fetch(`/combate?p1=${p1}&p2=${p2}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+
+        const data = await response.text();
+        document.getElementById("resultados").innerText = "Resultado combate: " + data;
     }
 </script>
 
