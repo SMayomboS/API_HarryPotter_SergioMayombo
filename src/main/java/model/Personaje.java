@@ -23,7 +23,6 @@ public class Personaje {
     private int fuerza;
     private int resistencia;
 
-    // Relación con películas
     @ManyToMany
     @JoinTable(
             name = "personaje_pelicula",
