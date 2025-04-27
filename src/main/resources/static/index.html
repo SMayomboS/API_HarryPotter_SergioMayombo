@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Harry Potter API - Pruebas</title>
+</head>
+<body>
+
+<h1>Harry Potter API - Frontend de Pruebas</h1>
+
+<h2>Registro</h2>
+<input type="text" id="register-username" placeholder="Usuario">
+<input type="password" id="register-password" placeholder="Contraseña">
+<button onclick="register()">Registrarse</button>
+
+<h2>Login</h2>
+<input type="text" id="login-username" placeholder="Usuario">
+<input type="password" id="login-password" placeholder="Contraseña">
+<button onclick="login()">Iniciar sesión</button>
+
+<h2>Crear película</h2>
+<input type="text" id="movie-title" placeholder="Título">
+<input type="number" id="movie-length" placeholder="Duración (min)">
+<input type="text" id="movie-sinopsis" placeholder="Sinopsis">
+<input type="number" id="movie-year" placeholder="Año">
+<button onclick="createMovie()">Crear Película</button>
+
+<script>
+    let token = "";
+
+    async function register() {
+        const username = document.getElementById("register-username").value;
+        const password = document.getElementById("register-password").value;
+
+        const response = await fetch('/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+        alert("Usuario registrado: " + JSON.stringify(data));
+    }
+
+    async function login() {
+        const username = document.getElementById("login-username").value;
+        const password = document.getElementById("login-password").value;
+
+        const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        token = await response.text();
+        alert("Login exitoso. Token guardado.");
+    }
+
+    async function createMovie() {
+        const title = document.getElementById("movie-title").value;
+        const length = document.getElementById("movie-length").value;
+        const sinopsis = document.getElementById("movie-sinopsis").value;
+        const year = document.getElementById("movie-year").value;
+
+        const response = await fetch('/peliculas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ title, length, sinopsis, year })
+        });
+
+        const data = await response.json();
+        alert("Película creada: " + JSON.stringify(data));
+    }
+</script>
+
+</body>
+</html>
