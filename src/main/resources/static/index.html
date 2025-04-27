@@ -69,9 +69,20 @@
             body: JSON.stringify({ username, password })
         });
 
-        const data = await response.json();
-        document.getElementById("resultados").innerText = "Usuario registrado: " + JSON.stringify(data);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.id && data.username) {
+                document.getElementById("resultados").innerText = `✅ Usuario registrado: Username = ${data.username}, ID = ${data.id}`;
+            } else {
+                document.getElementById("resultados").innerText = `✅ Usuario registrado correctamente.`;
+            }
+        } else {
+            const errorText = await response.text();
+            document.getElementById("resultados").innerText = `❌ Error al registrar usuario: ${errorText}`;
+        }
     }
+
+
 
     async function login() {
         const username = document.getElementById("login-username").value;
@@ -122,9 +133,20 @@
             body: JSON.stringify({ name, desc, magia, fuerza, resistencia })
         });
 
-        const data = await response.json();
-        document.getElementById("resultados").innerText = "Personaje creado: " + JSON.stringify(data);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.id && data.name) {
+                document.getElementById("resultados").innerText = `✅ Personaje creado: Nombre = ${data.name}, ID = ${data.id}`;
+            } else {
+                document.getElementById("resultados").innerText = `✅ Personaje creado correctamente.`;
+            }
+        } else {
+            const errorText = await response.text();
+            document.getElementById("resultados").innerText = `❌ Error al crear personaje: ${errorText}`;
+        }
     }
+
+
 
     async function fight() {
         const p1 = document.getElementById("combat-p1").value;

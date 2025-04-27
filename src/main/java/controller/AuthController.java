@@ -22,8 +22,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public Usuario register(@RequestBody Usuario usuario) {
-        return usuarioService.save(usuario);
+        Usuario nuevoUsuario = usuarioService.save(usuario);
+        System.out.println("Usuario registrado con ID: " + nuevoUsuario.getId());
+        return nuevoUsuario;
     }
+
 
     @PostMapping("/login")
     public String login(@RequestBody Usuario loginRequest) {

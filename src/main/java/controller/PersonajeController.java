@@ -25,8 +25,11 @@ public class PersonajeController {
 
     @PostMapping
     public Personaje createPersonaje(@RequestBody Personaje personaje) {
-        return personajeService.save(personaje);
+        Personaje nuevoPersonaje = personajeService.save(personaje);
+        System.out.println("Personaje creado con ID: " + nuevoPersonaje.getId());
+        return nuevoPersonaje;
     }
+
 
     @GetMapping("/{id}")
     public Personaje getPersonaje(@PathVariable Long id) {
@@ -49,4 +52,5 @@ public class PersonajeController {
         Personaje personaje = personajeService.findById(id).orElseThrow();
         return personaje.getPeliculas();
     }
+
 }
